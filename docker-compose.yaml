@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # serviço do postgres
+  db:
+    image: postgres:15-alpine
+    container_name: broka_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=broka_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # serviço do RabbitMQ com a interface de gerenciamento
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: broka_rabbitmq
+    ports:
+      - "5672:5672"   # porta default do RabbitMQ
+      - "15672:15672" # porta da interface web de gerenciamento
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  # serviço do backend
+  backend:
+    container_name: broka_backend
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/broka_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_RABBITMQ_HOST=rabbitmq
+
+volumes:
+  postgres_data:
