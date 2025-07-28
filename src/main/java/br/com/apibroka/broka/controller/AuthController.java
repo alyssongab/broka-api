@@ -5,6 +5,7 @@ import br.com.apibroka.broka.dto.auth.LoginResponseDTO;
 import br.com.apibroka.broka.dto.auth.RegisterRequestDTO;
 import br.com.apibroka.broka.model.User;
 import br.com.apibroka.broka.repository.UserRepository;
+import br.com.apibroka.broka.service.AuthorizationService;
 import br.com.apibroka.broka.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,10 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private TokenService tokenService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private AuthorizationService authorizationService;
 
     @PostMapping("/login")
     public ResponseEntity<Record> login(@RequestBody LoginRequestDTO data){
@@ -45,14 +43,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO data){
-        if(this.userRepository.findByEmail(data.email()).isPresent()){
-            return ResponseEntity.badRequest().body("Email ja cadastrado");
+        try{
+            authorizationService.registrarUsuario(data);
+            return ResponseEntity.ok("Usuario registrado com sucesso");
         }
-
-        String encryptedPass = this.passwordEncoder.encode(data.password());
-        User newUser = new User(null, data.name(), data.email(), encryptedPass, data.role());
-        this.userRepository.save(newUser);
-
-        return ResponseEntity.ok().build();
+        catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
