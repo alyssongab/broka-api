@@ -21,12 +21,11 @@ public class TokenService {
     public String gerarToken(User user){
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            String token = JWT.create()
+            return JWT.create()
                     .withIssuer("api-broka")
                     .withSubject(user.getEmail())
                     .withExpiresAt(gerarDataExpiracao())
                     .sign(algorithm);
-            return token;
         }
         catch(JWTCreationException e){
             throw new RuntimeException("Erro ao gerar token JWT", e);

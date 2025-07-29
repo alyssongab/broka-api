@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -31,7 +32,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recuperarToken(request);
         if(token != null){
             var email = tokenService.validarToken(token);
-            Optional<User> userOpt = userRepository.findByEmail(email);
+            Optional<UserDetails> userOpt = userRepository.findByEmail(email);
 
             if(userOpt.isPresent()){
                 var user = userOpt.get();
@@ -45,6 +46,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     private String recuperarToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
         if(authHeader == null) return null;
+        // pra pegar apenas o token, sem o "Bearer "
         return authHeader.replace("Bearer ", "");
     }
 }
