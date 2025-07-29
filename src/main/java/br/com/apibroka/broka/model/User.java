@@ -39,18 +39,17 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // permissoes do usuario
         if(this.role == UserRole.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
-                           new SimpleGrantedAuthority("ROLE_CLIENTE"),
-                           new SimpleGrantedAuthority("ROLE_DONO_RESTAURANTE"));
-        }
-        else if(this.role == UserRole.CLIENTE) {
-            return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
+            return List.of(
+                new SimpleGrantedAuthority("ROLE_ADMIN"),
+                new SimpleGrantedAuthority("ROLE_DONO_RESTAURANTE"),
+                new SimpleGrantedAuthority("ROLE_CLIENTE"));
         }
         else if(this.role == UserRole.DONO_RESTAURANTE) {
             return List.of(new SimpleGrantedAuthority("ROLE_DONO_RESTAURANTE"));
         }
+
         else {
-            return List.of();
+            return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
         }
     }
 
