@@ -4,6 +4,8 @@ import br.com.apibroka.broka.dto.product.ProductDTO;
 import br.com.apibroka.broka.model.Product;
 import br.com.apibroka.broka.model.User;
 import br.com.apibroka.broka.service.ProductService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Produtos")
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -23,12 +26,14 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/restaurants/{restaurantId}/products")
+    @Operation(description = "Lista todos os produtos de um determinado restaurante")
     public List<ProductDTO> getProductsByRestaurant(@PathVariable UUID restaurantId){
         return productService.findProductsByRestaurant(restaurantId);
     }
 
     @PostMapping("/restaurants/{restaurantId}/products")
     @PreAuthorize("hasRole('ROLE_DONO_RESTAURANTE')")
+    @Operation(description = "Adiciona um novo produto para o restaurante especificado")
     public ResponseEntity<ProductDTO> addProductToRestaurant(
         @PathVariable UUID restaurantId,
         @RequestBody ProductDTO dto,
@@ -40,6 +45,7 @@ public class ProductController {
 
     @PutMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_DONO_RESTAURANTE')")
+    @Operation(description = "Atualiza dados de um determinado produto através do Id")
     public ResponseEntity<ProductDTO> updateProductFromRestaurant(
         @PathVariable UUID productId,
         @RequestBody ProductDTO dto,
@@ -51,6 +57,7 @@ public class ProductController {
 
     @DeleteMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_DONO_RESTAURANTE')")
+    @Operation(description = "Deleta um produto através do Id")
     public ResponseEntity<Void> deleteProduct(
         @PathVariable UUID productId,
         @AuthenticationPrincipal User owner

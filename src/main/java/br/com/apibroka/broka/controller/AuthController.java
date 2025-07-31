@@ -7,6 +7,8 @@ import br.com.apibroka.broka.model.User;
 import br.com.apibroka.broka.repository.UserRepository;
 import br.com.apibroka.broka.service.AuthorizationService;
 import br.com.apibroka.broka.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Autenticação")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,6 +34,7 @@ public class AuthController {
     private AuthorizationService authorizationService;
 
     @PostMapping("/login")
+    @Operation(description = "Usuário faz login no sistema e recebe token de autenticação")
     public ResponseEntity<Record> login(@RequestBody LoginRequestDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
@@ -42,6 +46,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(description = "Cadastra um novo usuario no sistema seja cliente ou dono de restaurante")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO data){
         try{
             authorizationService.registrarUsuario(data);

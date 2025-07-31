@@ -23,6 +23,12 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
+    public static final String[] swagger = {
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/api-docs/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
@@ -35,6 +41,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
                     .requestMatchers("/api/test").permitAll()
+                    .requestMatchers(swagger).permitAll()
                     .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
