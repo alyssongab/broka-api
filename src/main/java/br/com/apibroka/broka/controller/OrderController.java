@@ -1,6 +1,7 @@
 package br.com.apibroka.broka.controller;
 
 import br.com.apibroka.broka.dto.order.OrderRequestDTO;
+import br.com.apibroka.broka.dto.payment.PaymentResponseDTO;
 import br.com.apibroka.broka.model.User;
 import br.com.apibroka.broka.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,8 +27,8 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasRole('CLIENTE')")
     @Operation(description = "Usuario realiza um novo pedido")
-    public ResponseEntity<String> placeOrder(@RequestBody OrderRequestDTO dto, @AuthenticationPrincipal User client){
-        var createdOrder = orderService.createOrder(dto, client);
-        return ResponseEntity.status(201).body("Pedido #" + createdOrder.getId() + " realizado com sucesso.");
+    public ResponseEntity<PaymentResponseDTO> placeOrder(@RequestBody OrderRequestDTO dto, @AuthenticationPrincipal User client){
+        PaymentResponseDTO paymentReponse = orderService.createOrder(dto, client);
+        return ResponseEntity.status(201).body(paymentReponse);
     }
 }
