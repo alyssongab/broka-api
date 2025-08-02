@@ -40,6 +40,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
                     .requestMatchers("/api/test").permitAll()
                     .requestMatchers(swagger).permitAll()
                     .anyRequest().authenticated()
